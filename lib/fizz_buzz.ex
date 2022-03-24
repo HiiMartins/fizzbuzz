@@ -6,9 +6,24 @@ defmodule FizzBuzz do
   end
 
   defp handle_file_read({:ok, result}) do
-    result
-    |> String.split(",")
-    |> Enum.map(&String.to_integer/1)
+    result =
+      result
+      |> String.split(",")
+      |> Enum.map(&convert_and_evaluate_numbers/1)
+
+    {:ok, result}
   end
-  defp handle_file_read({:error, reason}), do: "Error reading the file: #{reason}"
+
+  defp handle_file_read({:error, reason}), do: {:error, "Error reading the file: #{reason}"}
+
+  defp convert_and_evaluate_numbers(elem) do
+    elem
+    |> String.to_integer()
+    |> evaluate_numbers()
+  end
+
+  defp evaluate_numbers(elem) when rem(elem, 3) == 0 and rem(elem, 5) == 0, do: :fizzbuzz
+  defp evaluate_numbers(elem) when rem(elem, 3) == 0, do: :fizz
+  defp evaluate_numbers(elem) when rem(elem, 5) == 0, do: :buzz
+  defp evaluate_numbers(elem), do: elem
 end
